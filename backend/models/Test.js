@@ -1,8 +1,12 @@
 const mongoose = require('mongoose');
 
 const testSchema = new mongoose.Schema({
+    userId: {
+        type: String,
+        required: true
+    },
     applicantId: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         ref: 'User',
         required: true
     },
@@ -17,7 +21,7 @@ const testSchema = new mongoose.Schema({
     },
     result: {
         type: String,
-        enum: ['Pass', 'Fail'],
+        enum: ['Pass', 'Fail', "Pending"],
         required: true
     },
     remarks: {

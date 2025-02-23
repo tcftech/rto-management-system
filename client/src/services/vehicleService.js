@@ -5,7 +5,9 @@ const API_URL = 'http://localhost:5000/api/vehicles/';
 // Function to register a new vehicle
 export const registerVehicle = async (vehicleData) => {
     try {
-        const response = await axios.post(`${API_URL}/register`, vehicleData);
+        const response = await axios.post(`${API_URL}register`, vehicleData,{
+            headers: { 'Content-Type': 'multipart/form-data' }
+        });
         return response.data;
     } catch (error) {
         throw new Error(error.response.data.message || 'Error registering vehicle');
@@ -48,6 +50,18 @@ export const fetchVehicleRegistrations = async () => {
       
         
         return response.data.vehicles;
+    } catch (error) {
+        throw new Error(error.response.data.message || 'Error fetching vehicle registrations');
+    }
+};
+
+// Function to fetch all vehicle registrations
+export const fetchVehicleRegistrationsspecificuser = async (userId) => {
+    try {
+        const response = await axios.get(`${API_URL+userId}`);
+      
+        
+        return response.data;
     } catch (error) {
         throw new Error(error.response.data.message || 'Error fetching vehicle registrations');
     }

@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const vehicleSchema = new mongoose.Schema({
+    userId: { type: String, required: true },
     registrationNumber: {
         type: String,
         required: true,
@@ -26,6 +27,10 @@ const vehicleSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    vregistrationNumber:{
+        type: String,
+         default: '1234'
+    },
     color: {
         type: String,
         required: true
@@ -34,6 +39,7 @@ const vehicleSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
+    vehicleImage: { type: String },
     status: {
         type: String,
         enum: ['registered', 'renewed', 'pending'],

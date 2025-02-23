@@ -1,56 +1,77 @@
-import React, { useEffect, useState } from 'react';
-import { Container, Table, Button } from 'react-bootstrap';
-import { getAppointments, approveAppointment, rejectAppointment } from '../../services/appointmentService';
+import React, { useEffect, useState } from "react";
+import { Container, Grid, Card, CardContent, Typography, Button } from "@mui/material";
+// import { getOfficerDashboardData } from "../../services/officerService";
+import PeopleIcon from "@mui/icons-material/People";
+import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
+import CreditCardIcon from "@mui/icons-material/CreditCard";
+import EventNoteIcon from "@mui/icons-material/EventNote";
+import AssessmentIcon from "@mui/icons-material/Assessment";
+import { useNavigate } from "react-router-dom";
+import { getAdminDashboardData } from "../../services/adminService";
+import OfficePageoptions from "./officersidebar";
 
 const OfficerDashboard = () => {
-    const [appointments, setAppointments] = useState([]);
+    const [stats, setStats] = useState({});
+
+    const navigate = useNavigate();
 
     useEffect(() => {
-        const fetchAppointments = async () => {
-            const data = await getAppointments();
-            setAppointments(data);
+        const fetchStats = async () => {
+            try {
+                const data = await getAdminDashboardData();
+                setStats(data);
+            } catch (error) {
+                console.error("Error fetching officer stats:", error);
+            }
         };
-        fetchAppointments();
+
+        fetchStats();
     }, []);
 
-    const handleApprove = async (id) => {
-        await approveAppointment(id);
-        setAppointments(appointments.filter(appointment => appointment._id !== id));
-    };
-
-    const handleReject = async (id) => {
-        await rejectAppointment(id);
-        setAppointments(appointments.filter(appointment => appointment._id !== id));
-    };
+    const cardData = [
+        { title: "Total Users", value: stats.totalUsers, icon: <PeopleIcon />, color: "#1976d2", navigate: '/officer/userlist' },
+        { title: "Total Vehicles", value: stats.totalVehicleReports, icon: <DirectionsCarIcon />, color: "#388e3c", navigate: '/officer/vehicles' },
+        { title: "Total Licenses", value: stats.totalLicense, icon: <CreditCardIcon />, color: "#f57c00", navigate: '/officer/licenses' },
+        { title: "Total Appointments", value: stats.totalAppointments, icon: <EventNoteIcon />, color: "#d32f2f", navigate: '/officer/appointments' },
+    ];
 
     return (
         <Container>
-            <h1>Officer Dashboard</h1>
-            <Table striped bordered hover>
-                <thead>
-                    <tr>
-                        <th>Appointment ID</th>
-                        <th>Citizen Name</th>
-                        <th>Service Type</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {appointments.map(appointment => (
-                        <tr key={appointment._id}>
-                            <td>{appointment._id}</td>
-                            <td>{appointment.citizenName}</td>
-                            <td>{appointment.serviceType}</td>
-                            <td>{appointment.status}</td>
-                            <td>
-                                <Button variant="success" onClick={() => handleApprove(appointment._id)}>Approve</Button>
-                                <Button variant="danger" onClick={() => handleReject(appointment._id)}>Reject</Button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </Table>
+
+            <OfficePageoptions />
+
+            <Typography variant="h4" fontWeight="bold" textAlign="center" sx={{ my: 4 }}>
+              
+            </Typography>
+
+            <Grid container spacing={3}>
+                {cardData.map((item, index) => (
+                    <Grid item xs={12} sm={6} md={4} key={index}>
+                        <Card
+                            sx={{
+                                boxShadow: 4,
+                                borderRadius: 2,
+                                textAlign: "center",
+                                bgcolor: item.color,
+                                color: "#fff",
+                                transition: "0.3s",
+                                "&:hover": { transform: "scale(1.05)" },
+                            }}
+                        >
+                            <CardContent>
+                                <Typography variant="h6">{item.title}</Typography>
+                                <Typography variant="h4" fontWeight="bold">
+                                    {item.value || 0}
+                                </Typography>
+                                <div style={{ fontSize: "50px", margin: "10px 0" }}>{item.icon}</div>
+                                <Button variant="contained" sx={{ bgcolor: "#fff", color: item.color, mt: 2 }} onClick={() => navigate(item.navigate)}>
+                                    View {item.title.split(" ")[1]}
+                                </Button>
+                            </CardContent>
+                        </Card>
+                    </Grid>
+                ))}
+            </Grid>
         </Container>
     );
 };

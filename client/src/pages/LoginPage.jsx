@@ -8,24 +8,29 @@ const LoginPage = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const { setUser } = useContext(AuthContext);
-    const user = JSON.parse(localStorage.getItem('user')).user;
+    // const { setUser } = useContext(AuthContext);
+    const user = JSON.parse(localStorage.getItem('user'))?.user;
     const history = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             const response = await authService.login({ email, password });
-            console.log(response);
-            
-            setUser(response);
 
+            console.log(response);
+                      
             if (user.role === 'Administrator') {
                 history('/admin');
+            }else if (user.role==="Citizen"){
+                history('/citizen');
+            }else{
+                history('/officer');
             }
 
           
         } catch (err) {
+            console.log(err);
+            
             setError('Invalid email or password');
         }
     };

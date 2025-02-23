@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const path = require('path');
 
 // Load environment variables
 dotenv.config();
@@ -37,13 +38,15 @@ const reportRoutes = require('./routes/reportRoutes');
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/vehicles', vehicleRoutes);
-app.use('/api/licenses', licenseRoutes);
+app.use('/api/licenses', licenseRoutes);   
 app.use('/api/appointments', appointmentRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/search', searchRoutes);
-app.use('/api/tests', testRoutes);
+app.use('/api/tests', testRoutes);///api/tests/create
 app.use('/api/reports', reportRoutes);
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Start server
 const PORT = process.env.PORT || 5000;

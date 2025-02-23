@@ -1,8 +1,24 @@
+const License = require('../models/License');
 const Test = require('../models/Test');
+const Vehicle = require('../models/Vehicle');
 
 // Create a new driving test
 exports.createTest = async (req, res) => {
     try {
+      const {applicantId,vehicleId}=  req.body
+         const license = await License.find({licenseNumber:applicantId});
+         console.log(license);
+         
+         if(license==0){
+            return res.status(200).json({ message: 'License ID are not available.'});
+         }
+
+         const vehicles = await Vehicle.findById(vehicleId);
+
+         if (!vehicles) {
+            return  res.status(400).json({ message: 'License ID and Vehicle ID are not available.'});
+         }
+
         const testData = req.body;
         const newTest = new Test(testData);
         await newTest.save();
@@ -26,6 +42,20 @@ exports.getAllTests = async (req, res) => {
 exports.getTestById = async (req, res) => {
     try {
         const test = await Test.findById(req.params.id);
+        if (!test) {
+            return res.status(404).json({ message: 'Test not found' });
+        }
+        res.status(200).json(test);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching test', error: error.message });
+    }
+};
+
+
+// Get a specific driving test by ID
+exports.getTestuserById = async (req, res) => {
+    try {
+        const test = await Test.find({userId:req.params.id});
         if (!test) {
             return res.status(404).json({ message: 'Test not found' });
         }

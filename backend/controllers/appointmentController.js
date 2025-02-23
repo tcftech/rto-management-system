@@ -2,10 +2,13 @@ const Appointment = require('../models/Appointment');
 
 // Schedule a new appointment
 exports.scheduleAppointment = async (req, res) => {
+
+    console.log(req.body);
+    
     try {
         const { userId, serviceType, appointmentDate } = req.body;
         const newAppointment = new Appointment({
-            userId,
+            citizenId:userId,
             serviceType,
             appointmentDate,
             status: 'Scheduled'
@@ -13,6 +16,8 @@ exports.scheduleAppointment = async (req, res) => {
         await newAppointment.save();
         res.status(201).json({ message: 'Appointment scheduled successfully', appointment: newAppointment });
     } catch (error) {
+        console.log(error);
+        
         res.status(500).json({ message: 'Error scheduling appointment', error: error.message });
     }
 };
@@ -42,9 +47,15 @@ exports.getallAppointments = async (req, res) => {
 // Update appointment status
 exports.updateAppointmentStatus = async (req, res) => {
     try {
-        const { appointmentId } = req.params;
+        const { id } = req.params;
+        console.log(id);
+        
         const { status } = req.body;
-        const updatedAppointment = await Appointment.findByIdAndUpdate(appointmentId, { status }, { new: true });
+        const updatedAppointment = await Appointment.findByIdAndUpdate( { _id: id },
+            { status },
+            { new: true });
+        console.log(updatedAppointment);
+       
         if (!updatedAppointment) {
             return res.status(404).json({ message: 'Appointment not found' });
         }

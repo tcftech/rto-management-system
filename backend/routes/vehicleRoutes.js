@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const vehicleController = require('../controllers/vehicleController');
+const vehicleupload = require('../middleware/vehiclemulter');
 
 // Route for vehicle registration
-router.post('/register', vehicleController.registerVehicle);
+router.post('/register',vehicleupload.single("vehicleImage"), vehicleController.registerVehicle);
 
 // Route for vehicle registration renewal
 router.post('/renew', vehicleController.renewVehicleRegistration);
@@ -12,5 +13,7 @@ router.post('/renew', vehicleController.renewVehicleRegistration);
 router.get('/status/:id', vehicleController.trackVehicleStatus);
 
 router.get('/all', vehicleController.getVehicleRegistrations);
+// getVehicleRegistrationuserid
+router.get('/:id', vehicleController.getVehicleRegistrationuserid);
 
 module.exports = router;

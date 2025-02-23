@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getAllLicences } from "../../services/licenseService";
+import { getAllLicences, updateLicensestatus } from "../../services/licenseService";
 import {
   Table,
   TableBody,
@@ -15,11 +15,12 @@ import {
   Select,
 } from "@mui/material";
 import moment from "moment";
+import { Button } from "react-bootstrap";
 
 // Status options with colors
 const statusOptions = [
-  { value: "active", label: "Active", color: "#4CAF50" }, // Green
-  { value: "expired", label: "Expired", color: "#F44336" }, // Red
+  { value: "Pending", label: "Pending", color: "#4CAF50" }, // Green
+  { value: "Rejected", label: "Rejected", color: "#F44336" }, // Red
   { value: "suspended", label: "Suspended", color: "#FF9800" }, // Orange
 ];
 
@@ -45,11 +46,13 @@ const LicenseList = () => {
   // Handle status change
   const handleStatusChange = async (licenseId, newStatus) => {
     try {
-      setLicenses((prevLicenses) =>
-        prevLicenses.map((license) =>
-          license._id === licenseId ? { ...license, status: newStatus } : license
-        )
-      );
+      console.log(licenseId,newStatus);
+
+     const data= await updateLicensestatus(licenseId,newStatus)
+
+    
+     window.location.reload();
+      
     } catch (error) {
       console.error("Error updating status:", error);
     }
@@ -76,7 +79,8 @@ const LicenseList = () => {
                 <TableCell sx={{ color: "white", fontWeight: "bold" }}>DOB</TableCell>
                 <TableCell sx={{ color: "white", fontWeight: "bold" }}>Issue Date</TableCell>
                 <TableCell sx={{ color: "white", fontWeight: "bold" }}>Expiry Date</TableCell>
-                <TableCell sx={{ color: "white", fontWeight: "bold" }}>Issued By</TableCell>
+              
+                <TableCell sx={{ color: "white", fontWeight: "bold" }}>Documents</TableCell>
                 <TableCell sx={{ color: "white", fontWeight: "bold" }}>Status</TableCell>
               </TableRow>
             </TableHead>
@@ -90,10 +94,15 @@ const LicenseList = () => {
                     <TableCell>{moment(license.dateOfBirth).format("DD MMM YYYY")}</TableCell>
                     <TableCell>{moment(license.issueDate).format("DD MMM YYYY")}</TableCell>
                     <TableCell>{moment(license.expiryDate).format("DD MMM YYYY")}</TableCell>
-                    <TableCell>{license.issuedBy}</TableCell>
+                    
+                    <TableCell><a href={"http://localhost:5000/"+license.documents} target="_blank">
+                    <Button>
+                      Download
+                    </Button>
+                    </a></TableCell>
                     <TableCell>
                       <Select
-                        value={license.status}
+                        value={license.status} 
                         onChange={(e) => handleStatusChange(license._id, e.target.value)}
                         sx={(theme) => {
                           const currentStatus = statusOptions.find((s) => s.value === license.status);

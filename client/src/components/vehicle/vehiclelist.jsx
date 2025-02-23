@@ -13,6 +13,7 @@ import {
   Button,
   Select,
   MenuItem,
+  TextField,
 } from "@mui/material";
 import { Download, PictureAsPdf } from "@mui/icons-material";
 import axios from "axios";
@@ -25,6 +26,7 @@ const VehicleList = () => {
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filterStatus, setFilterStatus] = useState("");
+  const [searchquery, setsearchquery] = useState("");
 
   useEffect(() => {
     const fetchVehicles = async () => {
@@ -48,6 +50,17 @@ const VehicleList = () => {
       console.error("Error updating status:", error);
     }
   };
+
+  const search=()=>{
+
+    console.log(searchquery);
+
+    let searchdata=vehicles.filter(v=>v.ownerName.includes(searchquery)||v.brand.includes(searchquery)||v.vehicleType.includes(searchquery)||v.yearOfManufacture.toString().includes(searchquery)||v.color.includes(searchquery)||v.registrationDate.includes(searchquery))//registrationDate
+    console.log(searchdata);
+    
+    
+
+  }
 
   const handleDownloadPDF = (vehicle) => {
     const doc = new jsPDF();
@@ -98,6 +111,19 @@ const VehicleList = () => {
         <MenuItem value="pending">Pending</MenuItem>
       </Select>
 
+      <TextField
+        fullWidth
+        label="Search"
+        variant="outlined"
+        value={searchquery}
+        onChange={(e) => setsearchquery(e.target.value)}
+        
+
+        sx={{ mb: 2 ,  width:"20%",ml:2} }
+      />
+
+       <Button sx={{backgroundColor:"blue",color:"black",ml:2}} onClick={search} >submit</Button>
+
       {loading ? (
         <Box display="flex" justifyContent="center">
           <CircularProgress />
@@ -109,10 +135,16 @@ const VehicleList = () => {
               <TableRow>
                 <TableCell sx={{ color: "white", fontWeight: "bold" }}>#</TableCell>
                 <TableCell sx={{ color: "white", fontWeight: "bold" }}>Registration</TableCell>
+                <TableCell sx={{ color: "white", fontWeight: "bold" }}>Registration Date</TableCell>
                 <TableCell sx={{ color: "white", fontWeight: "bold" }}>Owner</TableCell>
+                <TableCell sx={{ color: "white", fontWeight: "bold" }}>Color</TableCell>
+
+                {/* vehicle */}
+                <TableCell sx={{ color: "white", fontWeight: "bold" }}>Brand</TableCell>
                 <TableCell sx={{ color: "white", fontWeight: "bold" }}>Model</TableCell>
                 <TableCell sx={{ color: "white", fontWeight: "bold" }}>Year</TableCell>
                 <TableCell sx={{ color: "white", fontWeight: "bold" }}>Status</TableCell>
+                <TableCell sx={{ color: "white", fontWeight: "bold" }}>Image</TableCell>
                 <TableCell sx={{ color: "white", fontWeight: "bold" }}>Actions</TableCell>
               </TableRow>
             </TableHead>
@@ -123,7 +155,10 @@ const VehicleList = () => {
                   <TableRow key={vehicle._id} hover>
                     <TableCell>{index + 1}</TableCell>
                     <TableCell>{vehicle.registrationNumber}</TableCell>
+                    <TableCell>{vehicle.registrationDate}</TableCell>
                     <TableCell>{vehicle.ownerName}</TableCell>
+                    <TableCell><Button sx={{ backgroundColor: vehicle.color, color: "black" }}>{vehicle.color}</Button></TableCell>
+                    <TableCell>{vehicle.brand}</TableCell>
                     <TableCell>{vehicle.model}</TableCell>
                     <TableCell>{vehicle.yearOfManufacture}</TableCell>
                     <TableCell>
@@ -136,6 +171,14 @@ const VehicleList = () => {
                         <MenuItem value="renewed">Renewed</MenuItem>
                         <MenuItem value="pending">Pending</MenuItem>
                       </Select>
+                    </TableCell>
+
+                    <TableCell>{console.log(vehicle.vehicleImage)
+
+                    }
+                      <a href={`http://localhost:5000/${vehicle.vehicleImage}`} download target="_blank" >
+                        <img height={"50px"} src={`http://localhost:5000/${vehicle.vehicleImage}`} alt="" />
+                      </a>
                     </TableCell>
                     <TableCell>
                       <Button

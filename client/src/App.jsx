@@ -6,7 +6,7 @@ import SignupPage from './pages/SignupPage';
 import AdminPage from './pages/AdminPage';
 import OfficerPage from './pages/OfficerPage';
 import CitizenPage from './pages/CitizenPage';
-import { AuthProvider } from './context/AuthContext';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import './App.css';
@@ -18,42 +18,68 @@ import LicenseList from './components/licence/licenceslist';
 import ReportsList from './components/reports/reportlist';
 import VehicleList from './components/vehicle/vehiclelist';
 
+const user = JSON.parse(localStorage.getItem('user'))?.user;
+
 function App() {
   return (
     <>
-   
-     <AuthProvider>
-     
-     <Router>
-     <RTONavbar/>
-       <Routes>
-         {/* Define routes using element instead of component */}
-         <Route path="/" element={<HomePage />} />
-         <Route path="/login" element={<LoginPage />} />
-         <Route path="/signup" element={<SignupPage />} />
 
-         {/*  admin */}
-         <Route path="/admin" element={<AdminPage />} />
-         <Route path="/admin/register" element={<AdminSignup />} />
-         <Route path="/admin/userlist" element={<UserList />} />
-         <Route path="/admin/appointments" element={<AppointmentsList />} />
-         <Route path="/admin/licenses" element={<LicenseList />} />
-         <Route path="/admin/totalreports" element={<ReportsList />} />
-          <Route path="/admin/vehicles" element={<VehicleList />} />
-         {/* admin/totalreports */}
+      {/* <AuthProvider> */}
 
-        
+      <Router>
+        <RTONavbar />
+        <Routes>
+          {/* Define routes using element instead of component */}
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
 
-         {/* officer */}
-         <Route path="/officer" element={<OfficerPage />} />
-         
-         {/* citizen */}
-         <Route path="/citizen" element={<CitizenPage />} />
-       </Routes>
-     </Router>
-   </AuthProvider>
+          {/*  admin */}
+          {
+            user?.role === "Administrator" && (
+              <>
+                <Route path="/admin" element={<AdminPage />} />
+                <Route path="/admin/register" element={<AdminSignup />} />
+                <Route path="/admin/userlist" element={<UserList />} />
+                <Route path="/admin/appointments" element={<AppointmentsList />} />
+                <Route path="/admin/licenses" element={<LicenseList />} />
+                <Route path="/admin/totalreports" element={<ReportsList />} />
+                <Route path="/admin/vehicles" element={<VehicleList />} />
+                <Route path="/admin/vehicles" element={<VehicleList />} />
+                {/* /officer/register */}
+              </>
+
+            )
+          }
+          {/* officer */}
+          {
+            user?.role === "Officer" && (
+              <>
+                <Route path="/officer" element={<OfficerPage />} />
+                <Route path="/officer/userlist" element={<UserList />} />
+                <Route path="/officer/appointments" element={<AppointmentsList />} />
+                <Route path="/officer/licenses" element={<LicenseList />} />
+                <Route path="/officer/totalreports" element={<ReportsList />} />
+                <Route path="/officer/vehicles" element={<VehicleList />} />
+                <Route path="/officer/vehicles" element={<VehicleList />} />
+              </>
+            )
+          }
+
+          {/* citizen */}
+          {
+            user?.role === "Citizen" && (
+              <>
+                <Route path="/citizen" element={<CitizenPage />} />
+              </>
+            )
+
+          }
+        </Routes>
+      </Router>
+      {/* </AuthProvider> */}
     </>
-   
+
   );
 }
 

@@ -1,20 +1,42 @@
 const License = require('../models/License');
-
+const { v4: uuidv4 } = require('uuid');
 // Function to apply for a new driving license
 exports.applyForLicense = async (req, res) => {
     try {
-        const { userId, licenseType, documents } = req.body;
+        const { userId, licenseType, dateOfBirth, issueDate, expiryDate ,holderName} = req.body;
+        const documentPath = req.file ? req.file.path : null;
+
+        if (!documentPath) {
+            return res.status(400).json({ message: "Document upload required" });
+        }
+
+       
+        const Licenses = await License.find({userId:userId})
+
+        if (Licenses) {
+            return res.status(200).json({ message: "Licennce already applied" });
+        }
+
         const newLicense = new License({
             userId,
+            holderName,
             licenseType,
-            documents,
-            status: 'Pending',
-            createdAt: new Date(),
+            dateOfBirth,
+            issueDate,
+            expiryDate,
+            documents: documentPath
         });
+
         await newLicense.save();
-        res.status(201).json({ message: 'License application submitted successfully', license: newLicense });
+        console.log("compltes");
+        
+        res.status(201).json({ message: "License application submitted successfully", license: newLicense });
+
     } catch (error) {
-        res.status(500).json({ message: 'Error applying for license', error: error.message });
+
+        console.log(error);
+        
+        res.status(500).json({ message: "Error applying for license", error: error.message });
     }
 };
 
@@ -56,6 +78,33 @@ exports.getLicense = async (req, res) => {
             console.error("Error fetching licenses:", error);
             res.status(500).json({ error: "Server error" });
           }
+};
+
+
+
+exports.getLicenseforUserid = async (req, res) => {
+    
+    try {
+        const licenses = await License.find({userId:req.params.id});
+        res.json(licenses);
+      } catch (error) {
+        console.error("Error fetching licenses:", error);
+        res.status(500).json({ error: "Server error" });
+      }
+};
+
+
+exports.updateLicensestatus = async (req, res) => {
+    
+    try {
+        const licenses = await License.findById(req.params.id);
+        licenses.status=req.body.status
+        licenses.save()
+        res.json({message:"status updated",licenses});
+      } catch (error) {
+        console.error("Error fetching licenses:", error);
+        res.status(500).json({ error: "Server error" });
+      }
 };
 
 

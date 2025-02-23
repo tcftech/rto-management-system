@@ -9,7 +9,11 @@ router.post('/create', testController.createTest);
 router.get('/', testController.getAllTests);
 
 // Route to get a specific driving test by ID
-router.get('/:id', testController.getTestById);
+router.get('/:id', testController.getTestuserById);
+
+
+// Route to get a specific driving test by ID
+router.get('/specific/:id', testController.getTestById);
 
 // Route to update a driving test by ID
 router.put('/:id', testController.updateTest);

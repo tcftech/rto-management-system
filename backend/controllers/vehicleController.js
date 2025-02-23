@@ -3,14 +3,22 @@ const Vehicle = require('../models/Vehicle');
 // Register a new vehicle
 exports.registerVehicle = async (req, res) => {
     try {
-        const { ownerName, vehicleType, registrationNumber, model, year } = req.body;
+        const { ownerName, vehicleType, registrationNumber, model, brand, yearOfManufacture, color, status ,userId} = req.body;
+
         const newVehicle = new Vehicle({
+            userId,
             ownerName,
             vehicleType,
             registrationNumber,
             model,
-            year,
+            brand,
+            yearOfManufacture,
+            color,
+            vehicleImage: req.file ? req.file.path : null,
+            status: status || "pending", // Default status to 'pending' if not provided
+            registrationDate: new Date(), // Automatically set the registration date
         });
+        
         await newVehicle.save();
         res.status(201).json({ message: 'Vehicle registered successfully', vehicle: newVehicle });
     } catch (error) {
@@ -54,6 +62,16 @@ exports.trackVehicleStatus = async (req, res) => {
 exports.getVehicleRegistrations = async (req, res) => {
     try {
         const vehicles = await Vehicle.find();
+        res.status(200).json({ vehicles });
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching vehicle registrations', error: error.message });
+    }
+};
+
+// Get all vehicle registrations
+exports.getVehicleRegistrationuserid = async (req, res) => {
+    try {
+        const vehicles = await Vehicle.find({userId:req.params.id});
         res.status(200).json({ vehicles });
     } catch (error) {
         res.status(500).json({ message: 'Error fetching vehicle registrations', error: error.message });

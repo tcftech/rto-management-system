@@ -8,28 +8,22 @@ import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import PersonIcon from "@mui/icons-material/Person";
-import AppointmentScheduler from "../components/bookappointment";
-import LicenseApplication from "../components/licence/applylicence";
-import TestApplication from "../components/testapplication";
-import LicenseDetails from "../components/licence/mylicencedetails";
-import VehicleRegistrationForm from "../components/vehicle/vehicleregisterationform";
-import VehicleDetails from "../components/vehicle/myvehicleDetails";
-import TestDetails from "../components/mytestdetails";
+import VehicleRegistrationForm from "../vehicle/vehicleregisterationform";
+import AppointmentScheduler from "../bookappointment";
+import LicenseApplication from "../licence/applylicence";
+import TestApplication from "../testapplication";
+
 
 const defaultServices = [
 
-    { id: 1, title: "My License Status", description: "Get your License registered in minutes—quick and easy!", icon: <DirectionsCarIcon />,  component: <><LicenseDetails/></>},//LicenseDetails
     { id: 2, title: "Vehicle Registration", description: "Register your new vehicle hassle-free.", icon: <AssignmentIcon /> ,  component: <><VehicleRegistrationForm/></>}, 
-    { id: 3, title: "My Vehicle Details", description: " Effortless registration for your new vehicle.", icon: <AssignmentIcon /> ,  component: <><VehicleDetails/></>}, 
-    { id: 4, title: "Test Appointment", description: "Book an appointment for your driving test easily.", icon: <CalendarTodayIcon /> ,  component: <><TestDetails/></> },//TestDetails
-    { id: 5, title: "General Appointment", description: "Schedule an appointment for any other driving-related services.", icon: <PersonIcon /> },
     { id: 6, title: "Apply Appointment", description: "Schedule an appointment for any other driving-related services.", icon: <PersonIcon />,  component: <><AppointmentScheduler/></>  },
     { id: 7, title: "Apply License", description: "Schedule an appointment for any other driving-related services.", icon: <PersonIcon /> , component: <><LicenseApplication/></>},//TestApplication
     { id: 8, title: "Apply Test", description: "Schedule an appointment for any other driving-related services.", icon: <PersonIcon />,component: <><TestApplication/></> },
     
 ];
 
-const CitizenPage = () => {
+const OfficePageoptions = () => {
     let user = JSON.parse(localStorage.getItem("user"))?.user;
     const [services, setServices] = useState(defaultServices);
     const [loading, setLoading] = useState(false);
@@ -99,28 +93,7 @@ const CitizenPage = () => {
 
                 ) : (
                     <Grid container spacing={3} justifyContent="center">
-                        {services.map((service) => (
-                            <Grid item xs={12} sm={6} md={4} key={service.id}>
-                                <Card sx={{
-                                    boxShadow: 5,
-                                    borderRadius: 3,
-                                    textAlign: "center",
-                                    transition: "0.3s",
-                                    "&:hover": { transform: "scale(1.05)" },
-                                    background: "linear-gradient(135deg, #2196F3 30%, #21CBF3 90%)",
-                                    color: "white",
-                                }}>
-                                    <CardContent>
-                                        {service.icon}
-                                        <Typography variant="h6" fontWeight="bold" sx={{ mt: 1 }}>{service.title}</Typography>
-                                        <Typography variant="body2" sx={{ mb: 2 }}>{service.description}</Typography>
-                                        <Button variant="contained" color="secondary" onClick={() => setSelectedService(service)}>
-                                            View Details
-                                        </Button>
-                                    </CardContent>
-                                </Card>
-                            </Grid>
-                        ))}
+                        
                     </Grid>
                 )}
 
@@ -137,4 +110,4 @@ const CitizenPage = () => {
     );
 };
 
-export default CitizenPage;
+export default OfficePageoptions;
